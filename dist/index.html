@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Countries API</title>
-    <script type="module" crossorigin src="/assets/index-CencKLpX.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-zUpRtufG.css">
+    <title>Countries API</title>
+    <script type="module" crossorigin src="/assets/index-CCuSloqi.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BEaEAgf_.css">
   </head>
   <body>
     <header>
@@ -13,8 +13,35 @@
     </header>
 
     <main>
+      <section class="controls-section">
+        <!-- Search Input Container -->
+        <div class="search-wrapper">
+          <label for="search-input" class="sr-only">Search for a country</label>
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            id="search-input"
+            name="search"
+            placeholder="Search for a country..."
+            autocomplete="off"
+            required
+          />
+        </div>
+        <div class="filter-wrapper">
+          <label for="region-filter" class="sr-only">Filter by Region</label>
+          <select id="region-filter" name="region">
+            <option value="" disabled selected>Filter by Region</option>
+            <option value="all">All Regions</option>
+            <option value="Africa">Africa</option>
+            <option value="Americas">Americas</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Europe</option>
+            <option value="Oceania">Oceania</option>
+          </select>
+        </div>
+      </section>
       <div id="countries-grid" class="countries-grid"></div>
     </main>
-
+    
   </body>
 </html>
