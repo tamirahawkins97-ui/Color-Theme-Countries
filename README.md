@@ -1,4 +1,4 @@
-REST Countries API with Color Theme Switcher
+##REST Countries API with Color Theme Switcher
 An interactive, responsive multi-page web application that pulls data from the REST Countries API, featuring full text search, regional filtering, dynamic route parameter passing, border-country navigation, and a persistent dark/light theme toggle.
 
 Overview
