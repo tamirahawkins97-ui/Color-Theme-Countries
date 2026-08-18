@@ -1,16 +1,16 @@
-import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(import.meta.dirname, 'countries1.html'),
-        details: resolve(import.meta.dirname, 'countries2.html'),
+  root: '.',
+  server: {
+    port: 5173,
+    open: false,
+    proxy: {
+      '/api': {
+        target: 'https://restcountries.com/v3.1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
-  },
-  server: {
-    open: '/countries1.html', // Automatically opens countries1.html in your browser
   },
 });
