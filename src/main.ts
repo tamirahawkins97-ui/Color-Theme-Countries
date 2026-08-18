@@ -1,5 +1,7 @@
+// src/main.ts
+
 import './style.css';
-import { Country, type IRawCountryData } from './models/Country';
+import { Country } from './models/Country';
 import { fetchCountries } from './services/apiServices';
 
 function sortCountries(countries: Country[]): Country[] {
@@ -22,7 +24,7 @@ function sortCountries(countries: Country[]): Country[] {
 }
 
 function renderCountries(countries: Country[]): void {
-  const grid = document.querySelector('#countries-grid');
+  const grid = document.querySelector<HTMLElement>('#countries-grid');
 
   if (!grid) {
     console.warn('Could not find #countries-grid element in DOM.');
@@ -63,8 +65,12 @@ async function init(): Promise<void> {
     const rawData = await fetchCountries();
     console.log('Loaded countries count:', Array.isArray(rawData) ? rawData.length : 0);
 
+    if (Array.isArray(rawData) && rawData.length > 0) {
+      console.log('SAMPLE_COUNTRY_RAW:', JSON.stringify(rawData[0], null, 2));
+    }
+
     const countries: Country[] = Array.isArray(rawData)
-      ? rawData.map((item: IRawCountryData) => new Country(item))
+      ? rawData.map((item: any) => new Country(item))
       : [];
 
     if (!countries.length) {
