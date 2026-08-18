@@ -1,40 +1,6 @@
 import './style.css';
-import { Country } from './models/Country';
+import { Country, type IRawCountryData } from './models/Country';
 import { fetchCountries } from './services/apiServices';
-
-function normalizeCountries(rawData: unknown): Country[] {
-  const items = Array.isArray(rawData) ? rawData : [];
-
-  return items.map((item: any) => {
-    const currencies = item.currencies ?? {};
-    const currenciesArray = Object.entries(currencies as Record<string, any>).map(([code, details]: [string, any]) => ({
-      code,
-      name: details?.name || code,
-      symbol: details?.symbol || '',
-    }));
-
-    const countryName =
-      item.names?.common ||
-      item.name?.common ||
-      item.names?.official ||
-      item.name?.official ||
-      item.name ||
-      'Unknown';
-
-    return new Country(
-      {
-        name: countryName,
-        population: Number(item.population ?? 0),
-        region: item.region || 'Unknown',
-        capital: Array.isArray(item.capital) ? item.capital[0] : item.capital || 'N/A',
-        flagUrl: item.flags?.svg || item.flags?.png || item.flagUrl || '',
-        alpha3Code: item.cca3 || item.cca2 || item.alpha3Code || '',
-      },
-      item.flags,
-      currenciesArray
-    );
-  });
-}
 
 function sortCountries(countries: Country[]): Country[] {
   const regionOrder: Record<string, number> = {
@@ -55,11 +21,12 @@ function sortCountries(countries: Country[]): Country[] {
   });
 }
 
-function renderCountries(countries: Country[]) {
+function renderCountries(countries: Country[]): void {
   const grid = document.querySelector('#countries-grid');
 
   if (!grid) {
-    throw new Error('Could not find #countries-grid element');
+    console.warn('Could not find #countries-grid element in DOM.');
+    return;
   }
 
   const orderedCountries = sortCountries(countries);
@@ -67,14 +34,23 @@ function renderCountries(countries: Country[]) {
   grid.innerHTML = orderedCountries
     .map(
       (country) => `
-        <article class="country-card">
-          <img class="country-flag" src="${country.flagUrl}" alt="${country.name} flag" />
+        <article class="country-card" data-code="${country.code}">
+          <div class="flag-wrapper">
+            <img 
+              class="country-flag" 
+              src="${country.flagUrl}" 
+              alt="Flag of ${country.name}" 
+              loading="lazy" 
+            />
+          </div>
           <div class="country-info">
             <h2 class="country-name">${country.name}</h2>
             <p><strong>Population:</strong> ${country.formattedPopulation}</p>
             <p><strong>Region:</strong> ${country.region}</p>
             <p><strong>Capital:</strong> ${country.capital}</p>
-            <p><strong>Currency:</strong> ${country.currencyName}</p>
+            <p><strong>Currency:</strong> ${country.currencyName}${
+              country.currencySymbol ? ` (${country.currencySymbol})` : ''
+            }</p>
           </div>
         </article>
       `
@@ -82,26 +58,14 @@ function renderCountries(countries: Country[]) {
     .join('');
 }
 
-async function init() {
+async function init(): Promise<void> {
   try {
     const rawData = await fetchCountries();
-    console.log('Loaded countries:', rawData.length);
-    console.table(
-      rawData.slice(0, 10).map((country: any) => {
-        const firstCurrency = Object.values(country.currencies ?? {}) as Array<{ name?: string }>;
+    console.log('Loaded countries count:', Array.isArray(rawData) ? rawData.length : 0);
 
-        return {
-          name: country.names?.common ?? country.name?.common ?? country.name,
-          capital: country.capital?.[0] ?? 'N/A',
-          region: country.region ?? 'Unknown',
-          population: country.population ?? 0,
-          currency: firstCurrency[0]?.name ?? 'N/A',
-          code: country.cca3 ?? country.cca2 ?? 'N/A',
-        };
-      })
-    );
-
-    const countries = normalizeCountries(rawData);
+    const countries: Country[] = Array.isArray(rawData)
+      ? rawData.map((item: IRawCountryData) => new Country(item))
+      : [];
 
     if (!countries.length) {
       console.warn('No countries were returned from the API.');

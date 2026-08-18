@@ -1,4 +1,7 @@
-const BASE_URL = 'https://api.restcountries.com/countries/v5?pretty=1';
+const url = new URL("https://api.restcountries.com/countries/v5?pretty=1");
+url.searchParams.set("limit", "100");
+const BASE_URL = "https://api.restcountries.com/countries/v5?pretty=1&limit=0";
+
 const API_TOKEN = 'rc_live_2639ebb835284643ac8501289d37605e';
 
 function unwrapCountriesPayload(payload: any): any[] {
