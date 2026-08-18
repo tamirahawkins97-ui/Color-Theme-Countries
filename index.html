@@ -3,48 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Countries API</title>
-    <link rel="stylesheet" href="/src/style.css" />
+    <title>Where in the world?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <header>
-      <h1>Where in the world?</h1>
-      <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle theme">
-      <span class="theme-icon">🌙</span>
-      <span class="theme-text">Dark Mode</span>
+    <header class="header">
+      <div class="header-container">
+        <h1 class="header-title" id="home-link">Where in the world?</h1>
+        <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle theme">
+          <span class="theme-icon">🌙</span>
+          <span class="theme-text">Dark Mode</span>
+        </button>
+      </div>
     </header>
 
-    <main>
-      <section class="controls-section">
-        <!-- Search Input Container -->
+    <main class="main-content">
+      <div class="controls-container">
         <div class="search-wrapper">
-          <label for="search-input" class="sr-only">Search for a country</label>
-          <span class="search-icon" aria-hidden="true">🔍</span>
+          <span class="search-icon" aria-hidden="true">
+            <svg viewBox="0 0 512 512">
+              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+            </svg>
+          </span>
           <input
-            type="search"
+            type="text"
             id="search-input"
-            name="search"
             placeholder="Search for a country..."
-            autocomplete="off"
-            required
+            aria-label="Search for a country"
           />
         </div>
-        <div class="filter-wrapper">
-          <label for="region-filter" class="sr-only">Filter by Region</label>
-          <select id="region-filter" name="region">
-            <option value="" disabled selected>Filter by Region</option>
-            <option value="all">All Regions</option>
-            <option value="Africa">Africa</option>
-            <option value="Americas">Americas</option>
-            <option value="Asia">Asia</option>
-            <option value="Europe">Europe</option>
-            <option value="Oceania">Oceania</option>
-          </select>
-        </div>
-      </section>
+
+        <select id="region-filter" aria-label="Filter by Region">
+          <option value="">Filter by Region</option>
+          <option value="Africa">Africa</option>
+          <option value="Americas">Americas</option>
+          <option value="Asia">Asia</option>
+          <option value="Europe">Europe</option>
+          <option value="Oceania">Oceania</option>
+        </select>
+      </div>
+
       <div id="countries-grid" class="countries-grid"></div>
     </main>
-    
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

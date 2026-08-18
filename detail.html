@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Country Details</title>
+    <title>Where in the world?</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,9 +23,14 @@
     </header>
 
     <main class="main-content">
-      <a href="/" id="back-btn" class="btn back-btn">← Back</a>
+      <div class="back-btn-container">
+        <a href="/" id="back-btn" class="btn back-btn">
+          <span>&larr;</span> Back
+        </a>
+      </div>
+
       <article id="country-detail" class="detail-container">
-        <p style="color: var(--text-muted);">Loading country details...</p>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">Loading country details...</p>
       </article>
     </main>
 

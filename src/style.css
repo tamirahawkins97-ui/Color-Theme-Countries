@@ -1,18 +1,67 @@
-/* Container & Hidden Helper */
-.hidden {
-  display: none !important;
+/* ==========================================================================
+   1. THEME & COLOR VARIABLES
+   ========================================================================== */
+
+:root {
+  /* Light Mode (Frontend Mentor Specs) */
+  --bg-color: hsl(0, 0%, 98%);
+  --element-bg: hsl(0, 0%, 100%);
+  --text-main: hsl(200, 15%, 8%);
+  --text-muted: hsl(0, 0%, 52%);
+  --input-placeholder: hsl(0, 0%, 52%);
+  --shadow: 0 2px 9px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.1);
+  --shadow-btn: 0 0 7px 1px rgba(0, 0, 0, 0.1);
+  --radius: 5px;
+}
+
+body.dark-mode {
+  /* Dark Mode */
+  --bg-color: hsl(207, 26%, 17%);
+  --element-bg: hsl(209, 23%, 22%);
+  --text-main: hsl(0, 0%, 100%);
+  --text-muted: hsl(0, 0%, 80%);
+  --input-placeholder: hsl(0, 0%, 100%);
+  --shadow: 0 2px 9px rgba(0, 0, 0, 0.25);
+  --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow-btn: 0 0 7px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   2. RESET & BASE
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .main-content {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2.5rem 1.5rem;
+  padding: 3rem 1.5rem 4rem;
 }
 
-/* Header */
+/* ==========================================================================
+   3. HEADER
+   ========================================================================== */
+
 .header {
   background-color: var(--element-bg);
   box-shadow: var(--shadow);
+  position: relative;
+  z-index: 10;
 }
 
 .header-container {
@@ -26,37 +75,69 @@
 
 .header-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 800;
   cursor: pointer;
+  letter-spacing: -0.2px;
 }
 
-/* Controls */
+.theme-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  font-family: inherit;
+  padding: 0.5rem;
+}
+
+/* ==========================================================================
+   4. CONTROLS (SEARCH & CUSTOM SELECT)
+   ========================================================================== */
+
 .controls-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   flex-wrap: wrap;
 }
 
 .search-wrapper {
   background-color: var(--element-bg);
   box-shadow: var(--shadow);
-  border-radius: 5px;
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
-  padding: 0.85rem 1.5rem;
-  gap: 1rem;
+  padding: 1rem 1.8rem;
+  gap: 1.2rem;
   width: 100%;
   max-width: 480px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.search-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 #search-input {
   border: none;
   background: transparent;
-  color: var(--text-color);
+  color: var(--text-main);
   font-family: inherit;
   font-size: 0.9rem;
   width: 100%;
@@ -64,202 +145,40 @@
 }
 
 #search-input::placeholder {
-  color: var(--input-color);
+  color: var(--input-placeholder);
+  opacity: 0.7;
 }
 
 #region-filter {
   background-color: var(--element-bg);
-  color: var(--text-color);
+  color: var(--text-main);
   border: none;
   box-shadow: var(--shadow);
-  border-radius: 5px;
-  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.8rem;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
+  min-width: 200px;
+  transition: background-color 0.2s ease;
 }
 
-/* Grid & Cards */
+/* ==========================================================================
+   5. COUNTRIES GRID (4 COLUMNS ON DESKTOP)
+   ========================================================================== */
+
 .countries-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 3.5rem 4rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 4.5rem 4.6rem;
 }
 
-.country-card {
-  background-color: var(--element-bg);
-  border-radius: 5px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.country-card:hover {
-  transform: translateY(-5px);
-}
-
-.flag-wrapper {
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
-}
-
-.country-flag {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.country-info {
-  padding: 1.5rem 1.5rem 2rem;
-}
-
-.country-name {
-  margin: 0 0 1rem;
-  font-size: 1.15rem;
-  font-weight: 800;
-}
-
-.country-info p {
-  margin: 0.4rem 0;
-  font-size: 0.88rem;
-}
-
-/* Buttons */
-.btn {
-  background-color: var(--element-bg);
-  color: var(--text-color);
-  border: none;
-  box-shadow: var(--shadow);
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.back-btn {
-  padding: 0.6rem 2rem;
-  font-weight: 600;
-  margin-bottom: 3.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Detail View */
-.detail-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
-  align-items: center;
-}
-
-@media (min-width: 900px) {
-  .detail-container {
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
+@media (min-width: 1200px) {
+  .countries-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
-}
-
-.detail-flag-wrapper {
-  width: 100%;
-  max-height: 400px;
-  box-shadow: var(--shadow);
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.detail-flag {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.detail-title {
-  margin: 0 0 1.5rem;
-  font-size: 1.75rem;
-  font-weight: 800;
-}
-
-.detail-columns {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-@media (min-width: 600px) {
-  .detail-columns {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.detail-columns p {
-  margin: 0.5rem 0;
-  font-size: 0.95rem;
-}
-
-.border-countries {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.border-badges {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.border-badge {
-  padding: 0.35rem 1.5rem;
-  font-size: 0.85rem;
-}
-
-/* 1. Theme definitions */
-:root {
-  --bg-color: hsl(0, 0%, 98%);
-  --element-bg: hsl(0, 0%, 100%);
-  --text-color: hsl(200, 15%, 8%);
-  --input-color: hsl(0, 0%, 52%);
-  --shadow: 0 2px 9px rgba(0, 0, 0, 0.06);
-}
-
-body.dark-mode {
-  --bg-color: hsl(207, 26%, 17%);
-  --element-bg: hsl(209, 23%, 22%);
-  --text-color: hsl(0, 0%, 100%);
-  --input-color: hsl(0, 0%, 100%);
-  --shadow: 0 2px 9px rgba(0, 0, 0, 0.25);
-}
-
-/* 2. Global background and text */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-}
-
-/* 3. Header, Cards, and Inputs MUST use --element-bg */
-.header,
-.search-wrapper,
-#region-filter,
-.country-card,
-.btn {
-  background-color: var(--element-bg);
-  color: var(--text-color);
-}
-
-#search-input {
-  color: var(--text-color);
-}
-
-.country-info strong,
-.detail-columns strong,
-.border-countries strong {
-  color: var(--text-color);
 }
 
 .country-card-link {
@@ -268,9 +187,61 @@ body {
   display: block;
 }
 
-.border-badge {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.country-card {
+  background-color: var(--element-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.country-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+.flag-wrapper {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  background-color: var(--bg-color);
+}
+
+.country-flag {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.country-info {
+  padding: 1.8rem 1.5rem 2.2rem;
+  flex-grow: 1;
+}
+
+.country-name {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.country-info p {
+  margin: 0.35rem 0;
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
+
+.country-info p strong {
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.country-info p span {
+  color: var(--text-muted);
 }

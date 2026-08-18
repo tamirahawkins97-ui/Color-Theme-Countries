@@ -8,18 +8,24 @@ const countryDetailContainer = document.querySelector<HTMLElement>('#country-det
 const themeToggleBtn = document.querySelector<HTMLButtonElement>('#theme-toggle');
 const homeLink = document.querySelector<HTMLElement>('#home-link');
 
+const THEME_KEY = 'theme-preference';
+
 /* --------------------------------------------------------------------------
-   THEME TOGGLE
+   1. THEME TOGGLE & STATE SYNC
 -------------------------------------------------------------------------- */
 function setupTheme(): void {
   const themeText = themeToggleBtn?.querySelector<HTMLSpanElement>('.theme-text');
   const themeIcon = themeToggleBtn?.querySelector<HTMLSpanElement>('.theme-icon');
 
-  const saved = localStorage.getItem('theme');
+  const saved = localStorage.getItem(THEME_KEY);
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isDark = saved === 'dark' || (!saved && prefersDark);
 
-  if (isDark) document.body.classList.add('dark-mode');
+  if (isDark) {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
   updateBtn(isDark);
 
   function updateBtn(dark: boolean): void {
@@ -29,25 +35,27 @@ function setupTheme(): void {
 
   themeToggleBtn?.addEventListener('click', () => {
     const dark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
     updateBtn(dark);
   });
 }
 
 /* --------------------------------------------------------------------------
-   RENDER DETAILS
+   2. RENDER DETAIL SCREEN
 -------------------------------------------------------------------------- */
 function renderDetailView(country: Country, allCountries: Country[]): void {
   if (!countryDetailContainer) return;
 
-  // Resolve borders to buttons with links
-  let bordersHtml = '<span>None</span>';
+  // Resolve 3-letter border codes into buttons with readable names
+  let bordersHtml = '<span class="no-borders" style="color: var(--text-muted);">None</span>';
 
   if (country.borders && country.borders.length > 0) {
     const badges = country.borders
       .map((borderCode: string) => {
         const borderMatch = allCountries.find(
-          (c: Country) => c.code.toUpperCase() === borderCode.toUpperCase()
+          (c: Country) =>
+            c.code.toUpperCase() === borderCode.toUpperCase() ||
+            c.name.toLowerCase() === borderCode.toLowerCase()
         );
         const name = borderMatch ? borderMatch.name : borderCode;
         return `<a href="/detail.html?code=${borderCode}" class="btn border-badge">${name}</a>`;
@@ -66,20 +74,22 @@ function renderDetailView(country: Country, allCountries: Country[]): void {
       <h2 class="detail-title">${country.name}</h2>
 
       <div class="detail-columns">
-        <div>
-          <p><strong>Native Name:</strong> ${country.nativeName}</p>
-          <p><strong>Population:</strong> ${country.formattedPopulation}</p>
-          <p><strong>Region:</strong> ${country.region}</p>
-          <p><strong>Sub Region:</strong> ${country.subregion}</p>
-          <p><strong>Capital:</strong> ${country.capital}</p>
+        <div class="detail-col">
+          <p><strong>Native Name:</strong> <span>${country.nativeName || country.name}</span></p>
+          <p><strong>Population:</strong> <span>${country.formattedPopulation}</span></p>
+          <p><strong>Region:</strong> <span>${country.region}</span></p>
+          <p><strong>Sub Region:</strong> <span>${country.subregion}</span></p>
+          <p><strong>Capital:</strong> <span>${country.capital}</span></p>
         </div>
 
-        <div>
-          <p><strong>Top Level Domain:</strong> ${country.topLevelDomain}</p>
-          <p><strong>Currencies:</strong> ${country.currencyName}${
+        <div class="detail-col">
+          <p><strong>Top Level Domain:</strong> <span>${country.topLevelDomain}</span></p>
+          <p><strong>Currencies:</strong> <span>${country.currencyName}${
             country.currencySymbol ? ` (${country.currencySymbol})` : ''
-          }</p>
-          <p><strong>Languages:</strong> ${country.languages.join(', ')}</p>
+          }</span></p>
+          <p><strong>Languages:</strong> <span>${
+            country.languages && country.languages.length > 0 ? country.languages.join(', ') : 'N/A'
+          }</span></p>
         </div>
       </div>
 
@@ -92,7 +102,7 @@ function renderDetailView(country: Country, allCountries: Country[]): void {
 }
 
 /* --------------------------------------------------------------------------
-   INIT DETAIL PAGE
+   3. INITIALIZE & FETCH
 -------------------------------------------------------------------------- */
 async function init(): Promise<void> {
   setupTheme();
@@ -102,33 +112,56 @@ async function init(): Promise<void> {
   });
 
   const params = new URLSearchParams(window.location.search);
-  const countryCode = params.get('code');
+  const targetCode = params.get('code')?.trim();
 
-  if (!countryCode) {
+  if (!targetCode) {
     if (countryDetailContainer) {
-      countryDetailContainer.innerHTML = `<p>No country specified. <a href="/">Return home</a></p>`;
+      countryDetailContainer.innerHTML = `
+        <div style="grid-column: 1 / -1;">
+          <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">No country specified.</p>
+          <a href="/" class="btn back-btn">&larr; Back to Home</a>
+        </div>
+      `;
     }
     return;
   }
 
   try {
     const rawData = await fetchCountries();
-    const allCountries = rawData.map((item: any) => new Country(item));
+    const allCountries: Country[] = Array.isArray(rawData)
+      ? rawData.map((item: any) => new Country(item))
+      : [];
 
-    const selectedCountry = allCountries.find(
-      (c: Country) => c.code.toUpperCase() === countryCode.toUpperCase()
-    );
+    // Find country by 3-letter code, 2-letter code, or name
+    const selectedCountry = allCountries.find((c: Country) => {
+      const codeMatch = c.code && c.code.toUpperCase() === targetCode.toUpperCase();
+      const nameMatch = c.name && c.name.toLowerCase() === targetCode.toLowerCase();
+      return codeMatch || nameMatch;
+    });
 
     if (selectedCountry) {
-      document.title = `${selectedCountry.name} - Details`;
+      document.title = `${selectedCountry.name} - Where in the world?`;
       renderDetailView(selectedCountry, allCountries);
     } else {
       if (countryDetailContainer) {
-        countryDetailContainer.innerHTML = `<p>Country not found. <a href="/">Return home</a></p>`;
+        countryDetailContainer.innerHTML = `
+          <div style="grid-column: 1 / -1;">
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">Could not find details for country code "${targetCode}".</p>
+            <a href="/" class="btn back-btn">&larr; Back to Home</a>
+          </div>
+        `;
       }
     }
   } catch (err) {
     console.error('Failed to load country details:', err);
+    if (countryDetailContainer) {
+      countryDetailContainer.innerHTML = `
+        <div style="grid-column: 1 / -1;">
+          <p style="color: red; font-size: 1.1rem; margin-bottom: 1.5rem;">Error loading country data. Please check your connection.</p>
+          <a href="/" class="btn back-btn">&larr; Back to Home</a>
+        </div>
+      `;
+    }
   }
 }
 
