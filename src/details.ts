@@ -11,7 +11,7 @@ const homeLink = document.querySelector<HTMLElement>('#home-link');
 const THEME_KEY = 'theme-preference';
 
 /* --------------------------------------------------------------------------
-   1. THEME TOGGLE & STATE SYNC
+   1. THEME TOGGLE
 -------------------------------------------------------------------------- */
 function setupTheme(): void {
   const themeText = themeToggleBtn?.querySelector<HTMLSpanElement>('.theme-text');
@@ -41,12 +41,11 @@ function setupTheme(): void {
 }
 
 /* --------------------------------------------------------------------------
-   2. RENDER DETAIL SCREEN
+   2. RENDER DETAILS
 -------------------------------------------------------------------------- */
 function renderDetailView(country: Country, allCountries: Country[]): void {
   if (!countryDetailContainer) return;
 
-  // Resolve 3-letter border codes into buttons with readable names
   let bordersHtml = '<span class="no-borders" style="color: var(--text-muted);">None</span>';
 
   if (country.borders && country.borders.length > 0) {
@@ -54,8 +53,8 @@ function renderDetailView(country: Country, allCountries: Country[]): void {
       .map((borderCode: string) => {
         const borderMatch = allCountries.find(
           (c: Country) =>
-            c.code.toUpperCase() === borderCode.toUpperCase() ||
-            c.name.toLowerCase() === borderCode.toLowerCase()
+            (c.code && c.code.toUpperCase() === borderCode.toUpperCase()) ||
+            (c.name && c.name.toLowerCase() === borderCode.toLowerCase())
         );
         const name = borderMatch ? borderMatch.name : borderCode;
         return `<a href="/detail.html?code=${borderCode}" class="btn border-badge">${name}</a>`;
@@ -112,13 +111,15 @@ async function init(): Promise<void> {
   });
 
   const params = new URLSearchParams(window.location.search);
-  const targetCode = params.get('code')?.trim();
+  const targetCode = (params.get('code') || params.get('country'))?.trim();
+
+  console.log('[Detail Page] Extracted URL code:', targetCode);
 
   if (!targetCode) {
     if (countryDetailContainer) {
       countryDetailContainer.innerHTML = `
         <div style="grid-column: 1 / -1;">
-          <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">No country specified.</p>
+          <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">No country specified in URL.</p>
           <a href="/" class="btn back-btn">&larr; Back to Home</a>
         </div>
       `;
@@ -132,7 +133,8 @@ async function init(): Promise<void> {
       ? rawData.map((item: any) => new Country(item))
       : [];
 
-    // Find country by 3-letter code, 2-letter code, or name
+    console.log('[Detail Page] Total countries loaded:', allCountries.length);
+
     const selectedCountry = allCountries.find((c: Country) => {
       const codeMatch = c.code && c.code.toUpperCase() === targetCode.toUpperCase();
       const nameMatch = c.name && c.name.toLowerCase() === targetCode.toLowerCase();
@@ -140,28 +142,22 @@ async function init(): Promise<void> {
     });
 
     if (selectedCountry) {
+      console.log('[Detail Page] Country found:', selectedCountry.name);
       document.title = `${selectedCountry.name} - Where in the world?`;
       renderDetailView(selectedCountry, allCountries);
     } else {
+      console.warn('[Detail Page] No matching country found for:', targetCode);
       if (countryDetailContainer) {
         countryDetailContainer.innerHTML = `
           <div style="grid-column: 1 / -1;">
-            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">Could not find details for country code "${targetCode}".</p>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">Could not find details for "${targetCode}".</p>
             <a href="/" class="btn back-btn">&larr; Back to Home</a>
           </div>
         `;
       }
     }
   } catch (err) {
-    console.error('Failed to load country details:', err);
-    if (countryDetailContainer) {
-      countryDetailContainer.innerHTML = `
-        <div style="grid-column: 1 / -1;">
-          <p style="color: red; font-size: 1.1rem; margin-bottom: 1.5rem;">Error loading country data. Please check your connection.</p>
-          <a href="/" class="btn back-btn">&larr; Back to Home</a>
-        </div>
-      `;
-    }
+    console.error('[Detail Page] Error loading data:', err);
   }
 }
 

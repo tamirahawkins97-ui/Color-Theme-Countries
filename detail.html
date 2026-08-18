@@ -6,6 +6,7 @@
     <title>Where in the world?</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="/src/style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap"
       rel="stylesheet"
@@ -22,18 +23,18 @@
       </div>
     </header>
 
-    <main class="main-content">
+    <main class="main-content detail-main">
       <div class="back-btn-container">
         <a href="/" id="back-btn" class="btn back-btn">
           <span>&larr;</span> Back
         </a>
       </div>
 
-      <article id="country-detail" class="detail-container">
+      <section id="country-detail" class="detail-container">
         <p style="color: var(--text-muted); font-size: 1.1rem;">Loading country details...</p>
-      </article>
+      </section>
     </main>
 
-    <script type="module" src="/src/detail.ts"></script>
+    <script type="module" src="/src/details.ts"></script>
   </body>
 </html>
