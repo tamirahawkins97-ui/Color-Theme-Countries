@@ -1,10 +1,10 @@
-##REST Countries API with Color Theme Switcher
+# REST Countries API with Color Theme Switcher
 An interactive, responsive multi-page web application that pulls data from the REST Countries API, featuring full text search, regional filtering, dynamic route parameter passing, border-country navigation, and a persistent dark/light theme toggle.
 
-Overview
+## Overview
 Building this application went far beyond standard DOM manipulation. Achieving a production-ready interface that matched the challenge specifications pixel-for-pixel required overcoming significant architectural, network, and data-integrity hurdles.
 
-Key Engineering Challenges & Solutions
+### Key Engineering Challenges & Solutions
 HTTP Failures & API Downtime: Intermittent network errors and API downtime were resolved by engineering an automated fallback layer. A local mock fixture (data.json) was integrated into the fetch service, enabling continuous testing of filtering, search pipelines, and UI layouts regardless of upstream endpoint availability.
 
 Defensive Data Modeling: The REST Countries API returns irregular schemas across different territories (e.g., missing top-level domains, inconsistent currency structures, alternate naming keys like cca2, cca3, and alpha3Code). A TypeScript Country class with recursive extractors was built to normalize the data and prevent runtime errors.
