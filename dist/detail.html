@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Where in the world?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/Color-Theme-Countries/assets/detail-CVfRA4fT.js"></script>
+    <link rel="modulepreload" crossorigin href="/Color-Theme-Countries/assets/apiServices-B7Wm1m_f.js">
+    <link rel="stylesheet" crossorigin href="/Color-Theme-Countries/assets/apiServices-DA6w7XMv.css">
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <h1 class="header-title" id="home-link">Where in the world?</h1>
+        <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle theme">
+          <span class="theme-icon">🌙</span>
+          <span class="theme-text">Dark Mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content detail-main">
+      <div class="back-btn-container">
+        <a href="/" id="back-btn" class="btn back-btn">
+          <span>&larr;</span> Back
+        </a>
+      </div>
+
+      <section id="country-detail" class="detail-container">
+        <p style="color: var(--text-muted); font-size: 1.1rem;">Loading country details...</p>
+      </section>
+    </main>
+
+  </body>
+</html>

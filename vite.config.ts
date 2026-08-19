@@ -2,7 +2,8 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'serve' ? '/' : '/Color-Theme-Countries/',
   root: '.',
   server: {
     port: 5173,
@@ -23,4 +24,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
